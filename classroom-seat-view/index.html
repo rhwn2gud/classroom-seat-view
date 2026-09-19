@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>우리반 자리배치 시뮬레이터</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="src/style.css" />
+    <!--
+      빌드 도구 없이 브라우저에서 바로 실행되는 정적 사이트입니다.
+      three.js는 npm install 없이 CDN(jsDelivr)에서 바로 불러옵니다.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <h1>🪑 우리반 자리배치 시뮬레이터</h1>
+        <nav class="tabs">
+          <button class="tab-btn active" data-tab="editor">배치 편집</button>
+          <button class="tab-btn" data-tab="preview">좌석 미리보기</button>
+        </nav>
+      </header>
+
+      <main>
+        <section id="editor-tab" class="tab-panel active">
+          <aside class="panel side-panel">
+            <div class="field-group">
+              <h2>교실 크기</h2>
+              <label>가로 (m) <input id="room-width" type="number" min="3" max="20" step="0.5" /></label>
+              <label>세로 (m) <input id="room-depth" type="number" min="3" max="20" step="0.5" /></label>
+            </div>
+            <div class="field-group">
+              <h2>칠판/스크린</h2>
+              <label>가로 폭 (m) <input id="board-width" type="number" min="1" max="10" step="0.1" /></label>
+            </div>
+            <div class="field-group">
+              <h2>책상</h2>
+              <button id="add-desk-btn" class="primary-btn">➕ 책상 추가 (클릭해서 배치)</button>
+              <button id="rotate-desk-btn">↻ 선택한 책상 90° 회전</button>
+              <button id="delete-desk-btn" class="danger-btn">🗑 선택한 책상 삭제</button>
+            </div>
+            <div class="field-group">
+              <h2>빠른 배치</h2>
+              <label>줄 수 <input id="grid-rows" type="number" min="1" max="10" value="4" /></label>
+              <label>줄당 좌석 수 <input id="grid-cols" type="number" min="1" max="10" value="6" /></label>
+              <button id="grid-fill-btn">▦ 격자로 자동 채우기</button>
+              <p class="hint">자동 채우기 후 마우스로 드래그해서 자유롭게 위치를 조정하세요.</p>
+            </div>
+            <div class="field-group">
+              <h2>짝지어 배치 (책상 2개씩 붙이기)</h2>
+              <label>묶음(조) 수 <input id="pair-groups" type="number" min="1" max="6" value="3" /></label>
+              <label>조당 줄 수 <input id="pair-rows" type="number" min="1" max="10" value="6" /></label>
+              <button id="pair-fill-btn">👯 짝지어 배치하기</button>
+              <p class="hint">책상 2개를 붙인 조를 가로로 나란히 배치하고, 조 사이에는 통로를 띄워요. 줄 수는 조마다 나중에 직접 추가/삭제해서 맞추면 돼요.</p>
+            </div>
+            <div class="field-group">
+              <h2>저장 / 불러오기</h2>
+              <button id="export-btn">💾 배치 내보내기 (JSON)</button>
+              <button id="import-btn">📂 배치 불러오기</button>
+              <input id="import-file" type="file" accept="application/json" style="display:none" />
+              <button id="reset-btn" class="danger-btn">전체 초기화</button>
+            </div>
+          </aside>
+          <div class="canvas-wrap">
+            <canvas id="editor-canvas"></canvas>
+            <p class="hint canvas-hint">책상 하나를 드래그하면 그것만 옮겨져요 · 빈 곳을 드래그하면 사각형으로 여러 책상을 한번에 선택해서 같이 옮길 수 있어요.</p>
+          </div>
+        </section>
+
+        <section id="preview-tab" class="tab-panel">
+          <aside class="panel side-panel">
+            <h2>좌석 목록</h2>
+            <ul id="seat-list" class="seat-list"></ul>
+            <div class="field-group" id="score-box">
+              <h2>이 자리에서 칠판 시야</h2>
+              <div id="score-value" class="score-value">-</div>
+              <p id="score-label" class="hint">좌석을 선택하세요</p>
+            </div>
+            <p class="hint">3D 화면을 드래그하면 고개를 돌리듯 주변을 둘러볼 수 있어요.</p>
+          </aside>
+          <div class="canvas-wrap">
+            <canvas id="preview-canvas"></canvas>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
